@@ -1,0 +1,10 @@
+# Tree service lead automation - dependencies (Python 3.7+ compatible)
+selenium>=4.0.0
+webdriver-manager>=3.8.0
+pandas>=1.0.0
+# Optional: reduces bot detection on Propwire (install if you get "unusual activity" block)
+undetected-chromedriver>=3.5.0
+
+# SMS campaign (send + inbound webhook)
+twilio>=8.0.0
+flask>=2.0.0

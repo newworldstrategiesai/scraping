@@ -6,6 +6,7 @@ import { getConfig } from "@/lib/actions/config";
 import {
   getListMetadata,
   getListPreview,
+  getSmsCellListRows,
 } from "@/lib/actions/lists";
 import { SmsListTab } from "./sms-list-tab";
 import { OptOutsTab } from "./opt-outs-tab";
@@ -19,11 +20,24 @@ export const metadata: Metadata = {
   description: "View and manage address lists, lead lists, SMS list, opt-outs, and warm leads",
 };
 
-export default async function ListsPage() {
-  const [config, listMetadata, smsPreview] = await Promise.all([
+const VALID_TABS = ["sms", "opt_outs", "warm_leads", "addresses", "leads"] as const;
+
+export default async function ListsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const params = await searchParams;
+  const tabParam = params.tab ?? "sms";
+  const defaultTab = VALID_TABS.includes(tabParam as (typeof VALID_TABS)[number])
+    ? tabParam
+    : "sms";
+
+  const [config, listMetadata, smsPreview, smsRowsResult] = await Promise.all([
     getConfig(),
     getListMetadata(),
     getListPreview("sms_cell_list"),
+    getSmsCellListRows(0),
   ]);
 
   const smsMeta = listMetadata.find((m) => m.id === "sms_cell_list") ?? null;
@@ -41,7 +55,7 @@ export default async function ListsPage() {
         <p className="mb-6 text-muted-foreground text-sm">
           View and manage address lists, lead lists, SMS campaign list, opt-outs, and warm leads.
         </p>
-        <Tabs defaultValue="sms" className="space-y-4">
+        <Tabs defaultValue={defaultTab} className="space-y-4">
           <TabsList className="flex flex-wrap gap-1">
             <TabsTrigger value="sms">SMS list</TabsTrigger>
             <TabsTrigger value="opt_outs">Opt-outs</TabsTrigger>
@@ -50,7 +64,7 @@ export default async function ListsPage() {
             <TabsTrigger value="leads">Lead lists</TabsTrigger>
           </TabsList>
           <TabsContent value="sms" className="mt-4">
-            <SmsListTab metadata={smsMeta} preview={smsPreview} />
+            <SmsListTab metadata={smsMeta} preview={smsPreview} supabaseRows={smsRowsResult.rows} totalRows={smsRowsResult.total} />
           </TabsContent>
           <TabsContent value="opt_outs" className="mt-4">
             <OptOutsTab />

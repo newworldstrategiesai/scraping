@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { getSupabase } from "@/lib/supabase/server";
 import type { FormSubmission, FormSubmissionInsert } from "@/types/database";
 
@@ -34,5 +35,7 @@ export async function submitForm(form: {
   };
   const { error } = await supabase.from("form_submissions").insert(row as never);
   if (error) return { ok: false, error: error.message };
+  revalidatePath("/dashboard/submissions");
+  revalidatePath("/dashboard");
   return { ok: true };
 }

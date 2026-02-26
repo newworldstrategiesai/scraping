@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { submitForm } from "@/lib/actions/submissions";
 import { cn } from "@/lib/utils";
 
-export function ContactForm() {
+export function ContactForm({ onSuccess }: { onSuccess?: () => void } = {}) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -27,6 +27,7 @@ export function ContactForm() {
     if (result.ok) {
       setStatus("success");
       form.reset();
+      onSuccess?.();
     } else {
       setStatus("error");
       setErrorMessage(result.error ?? "Something went wrong.");

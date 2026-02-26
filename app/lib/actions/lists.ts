@@ -8,6 +8,7 @@ import type {
   WarmLeadInsert,
   ListMetadata,
   ListPreview,
+  SmsCellListRow,
 } from "@/types/database";
 
 const PAGE_SIZE = 50;
@@ -33,6 +34,20 @@ export async function getListPreview(listId: string): Promise<ListPreview | null
     .single();
   if (error || !data) return null;
   return data as ListPreview;
+}
+
+export async function getSmsCellListRows(page = 0): Promise<{ rows: SmsCellListRow[]; total: number }> {
+  const supabase = getSupabase();
+  if (!supabase) return { rows: [], total: 0 };
+  const from = page * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+  const [countRes, dataRes] = await Promise.all([
+    supabase.from("sms_cell_list_rows").select("id", { count: "exact", head: true }),
+    supabase.from("sms_cell_list_rows").select("*").order("created_at", { ascending: false }).range(from, to),
+  ]);
+  const total = countRes.count ?? 0;
+  const rows = (dataRes.data ?? []) as SmsCellListRow[];
+  return { rows, total };
 }
 
 export async function getOptOuts(page = 0): Promise<{ rows: OptOut[]; total: number }> {

@@ -145,7 +145,7 @@ def set_job_result(supabase, job_id: str, success: bool, log: str, error: str):
 
 
 def update_list_after_build_sms(supabase, job_id: str):
-    """After build_sms_list success: update list_metadata and list_preview for sms_cell_list."""
+    """After build_sms_list success: write full list to sms_cell_list_rows, update list_metadata and list_preview."""
     import json
     csv_path = REPO_ROOT / "sms_cell_list.csv"
     if not csv_path.exists():
@@ -154,27 +154,50 @@ def update_list_after_build_sms(supabase, job_id: str):
         import pandas as pd
         df = pd.read_csv(csv_path)
         row_count = len(df)
-        preview_size = min(200, row_count)
-        # JSON-serializable list of dicts (handles NaN, int64, etc.)
-        rows = json.loads(df.head(preview_size).to_json(orient="records", date_format="iso"))
         now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+        # 1. Map CSV columns to table columns (build_sms_list outputs Full_Name, Address, Phone_Number, etc.)
+        rename = {"Phone_Number": "phone_number", "Full_Name": "full_name", "Address": "address", "Source_Address": "source_address", "Lead_Type": "lead_type", "Resident_Type": "resident_type"}
+        df_out = df.rename(columns={k: v for k, v in rename.items() if k in df.columns})
+        cols = [c for c in ["phone_number", "full_name", "address", "source_address", "lead_type", "resident_type"] if c in df_out.columns]
+        if not cols:
+            cols = list(df_out.columns)[:6]
+
+        # 2. Delete all existing rows (Supabase: delete with filter that matches all)
+        supabase.table("sms_cell_list_rows").delete().neq("id", "00000000-0000-0000-0000-000000000000").execute()
+
+        # 3. Insert all rows in batches of 100
+        rows_data = df_out[cols].replace({pd.NA: None}).to_dict(orient="records")
+        for r in rows_data:
+            for k, v in list(r.items()):
+                if v is not None and not isinstance(v, str):
+                    r[k] = str(v)
+        for i in range(0, len(rows_data), 100):
+            chunk = rows_data[i : i + 100]
+            supabase.table("sms_cell_list_rows").insert(chunk).execute()
+
+        # 4. Update list_metadata
         supabase.table("list_metadata").upsert({
             "id": "sms_cell_list",
             "name": "SMS campaign list",
             "list_type": "sms_cell",
-            "source": "file",
-            "source_identifier": "sms_cell_list.csv",
+            "source": "table",
+            "source_identifier": "sms_cell_list_rows",
             "row_count": row_count,
             "last_updated_at": now,
             "updated_by_job_id": job_id,
         }, on_conflict="id").execute()
+
+        # 5. Update list_preview (first 200 rows for quick display)
+        preview_size = min(200, row_count)
+        rows = json.loads(df.head(preview_size).to_json(orient="records", date_format="iso"))
         supabase.table("list_preview").upsert({
             "list_id": "sms_cell_list",
             "rows": rows,
             "updated_at": now,
         }, on_conflict="list_id").execute()
     except Exception as e:
-        print(f"Failed to update list metadata: {e}", file=sys.stderr)
+        print(f"Failed to update list in Supabase: {e}", file=sys.stderr)
 
 
 def load_dotenv():

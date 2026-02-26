@@ -8,9 +8,10 @@ import { fadeInUp, staggerContainer, staggerItem, defaultTransition } from "@/li
 interface AnimatedHeroProps {
   siteName: string;
   phone: string;
+  onOpenForm?: () => void;
 }
 
-export function AnimatedHero({ siteName, phone }: AnimatedHeroProps) {
+export function AnimatedHero({ siteName, phone, onOpenForm }: AnimatedHeroProps) {
   return (
     <section className="relative overflow-hidden border-b border-border bg-muted/30 py-20 md:py-28">
       <div className="mx-auto max-w-5xl px-4 text-center">
@@ -47,9 +48,15 @@ export function AnimatedHero({ siteName, phone }: AnimatedHeroProps) {
               transition={defaultTransition}
               className="mt-10 flex flex-wrap justify-center gap-4"
             >
-              <Button asChild size="lg">
-                <a href={`tel:${phone.replace(/\D/g, "")}`}>Schedule a Consultation</a>
-              </Button>
+              {onOpenForm ? (
+                <Button size="lg" onClick={onOpenForm}>
+                  Schedule a Consultation
+                </Button>
+              ) : (
+                <Button asChild size="lg">
+                  <a href={`tel:${phone.replace(/\D/g, "")}`}>Schedule a Consultation</a>
+                </Button>
+              )}
               <Button asChild variant="outline" size="lg">
                 <a href="#services">Our Services</a>
               </Button>

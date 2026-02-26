@@ -11,12 +11,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getSubmissions } from "@/lib/actions/submissions";
+import { normalizePhone } from "@/lib/utils/phone";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Form Submissions | Lead Automation",
   description: "View contact form submissions from the website",
 };
+
+// Always fetch fresh submissions (no static/cache)
+export const dynamic = "force-dynamic";
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -67,9 +71,12 @@ export default async function SubmissionsPage() {
                       <TableCell className="font-medium">{row.name ?? "—"}</TableCell>
                       <TableCell>
                         {row.phone ? (
-                          <a href={`tel:${row.phone.replace(/\D/g, "")}`} className="hover:underline">
+                          <Link
+                            href={`/lists/contact/${normalizePhone(row.phone)}`}
+                            className="text-primary hover:underline"
+                          >
                             {row.phone}
-                          </a>
+                          </Link>
                         ) : (
                           "—"
                         )}
@@ -84,7 +91,16 @@ export default async function SubmissionsPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm max-w-[160px] truncate">
-                        {row.address ?? "—"}
+                        {row.address && row.phone ? (
+                          <Link
+                            href={`/lists/contact/${normalizePhone(row.phone)}`}
+                            className="text-primary hover:underline"
+                          >
+                            {row.address}
+                          </Link>
+                        ) : (
+                          row.address ?? "—"
+                        )}
                       </TableCell>
                       <TableCell className="max-w-[240px] truncate text-muted-foreground text-sm">
                         {row.message ?? "—"}

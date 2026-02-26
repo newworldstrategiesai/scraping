@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { getJobById } from "@/lib/actions/jobs";
 import type { Job } from "@/types/database";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -103,7 +104,22 @@ export function JobProgress({
       <CardContent className="space-y-3">
         {(logText || errText) ? (
           <div className="max-h-48 overflow-auto rounded-md border bg-background p-3 font-mono text-xs">
-            {logText && <pre className="whitespace-pre-wrap break-words text-foreground">{logText}</pre>}
+            {logText && (
+              <pre className="whitespace-pre-wrap break-words text-foreground">
+                {job?.action === "build_sms_list" && logText.includes("sms_cell_list.csv")
+                  ? logText.split("sms_cell_list.csv").map((part, i) => (
+                      <React.Fragment key={i}>
+                        {i > 0 && (
+                          <Link href="/lists?tab=sms" className="font-medium text-primary underline hover:no-underline">
+                            sms_cell_list.csv
+                          </Link>
+                        )}
+                        {part}
+                      </React.Fragment>
+                    ))
+                  : logText}
+              </pre>
+            )}
             {errText && <pre className="whitespace-pre-wrap break-words text-destructive">{errText}</pre>}
             <div ref={logEndRef} />
           </div>
@@ -112,9 +128,26 @@ export function JobProgress({
         )}
         {error && <p className="text-destructive text-sm">{error}</p>}
         {terminal && (
-          <Button variant="outline" size="sm" onClick={onDismiss}>
-            Dismiss
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            {job?.action === "build_sms_list" && (
+              <Button asChild variant="default" size="sm">
+                <Link href="/lists?tab=sms">View SMS list</Link>
+              </Button>
+            )}
+            {job?.action === "parse_quality_leads" && (
+              <Button asChild variant="default" size="sm">
+                <Link href="/lists?tab=leads">View lead lists</Link>
+              </Button>
+            )}
+            {job?.action === "run_cbc" && (
+              <Button asChild variant="default" size="sm">
+                <Link href="/lists?tab=leads">View lead lists</Link>
+              </Button>
+            )}
+            <Button variant="outline" size="sm" onClick={onDismiss}>
+              Dismiss
+            </Button>
+          </div>
         )}
       </CardContent>
     </Card>

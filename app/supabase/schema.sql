@@ -60,6 +60,16 @@ create table if not exists form_submissions (
 
 create index if not exists form_submissions_created_at on form_submissions (created_at desc);
 
+-- Contact notes: CRM notes per phone (contact-centric)
+create table if not exists contact_notes (
+  id uuid primary key default gen_random_uuid(),
+  phone_number text not null,
+  note text not null,
+  created_at timestamptz default now()
+);
+
+create index if not exists contact_notes_phone on contact_notes (phone_number);
+
 -- List metadata: name, type, row count, last updated (for file-based and unified list view)
 create table if not exists list_metadata (
   id text primary key,
@@ -79,6 +89,20 @@ create table if not exists list_preview (
   updated_at timestamptz default now()
 );
 
+-- Full SMS list rows (worker replaces on each Build SMS list; UI reads from here)
+create table if not exists sms_cell_list_rows (
+  id uuid primary key default gen_random_uuid(),
+  phone_number text not null,
+  full_name text,
+  address text,
+  source_address text,
+  lead_type text,
+  resident_type text,
+  created_at timestamptz default now()
+);
+
+create index if not exists sms_cell_list_rows_phone on sms_cell_list_rows (phone_number);
+
 insert into list_metadata (id, name, list_type, source, source_identifier) values
   ('sms_cell_list', 'SMS campaign list', 'sms_cell', 'file', 'sms_cell_list.csv'),
   ('propwire_addresses', 'Address list (CBC)', 'addresses', 'file', 'propwire_addresses.csv'),
@@ -96,3 +120,5 @@ on conflict (id) do nothing;
 -- alter table form_submissions enable row level security;
 -- alter table list_metadata enable row level security;
 -- alter table list_preview enable row level security;
+-- alter table sms_cell_list_rows enable row level security;
+-- alter table contact_notes enable row level security;

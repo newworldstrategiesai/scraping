@@ -187,6 +187,56 @@ export interface Database {
           updated_at?: string | null;
         };
       };
+      contact_notes: {
+        Row: {
+          id: string;
+          phone_number: string;
+          note: string;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          phone_number: string;
+          note: string;
+          created_at?: string | null;
+        };
+        Update: {
+          phone_number?: string;
+          note?: string;
+          created_at?: string | null;
+        };
+      };
+      sms_cell_list_rows: {
+        Row: {
+          id: string;
+          phone_number: string;
+          full_name: string | null;
+          address: string | null;
+          source_address: string | null;
+          lead_type: string | null;
+          resident_type: string | null;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          phone_number: string;
+          full_name?: string | null;
+          address?: string | null;
+          source_address?: string | null;
+          lead_type?: string | null;
+          resident_type?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          phone_number?: string;
+          full_name?: string | null;
+          address?: string | null;
+          source_address?: string | null;
+          lead_type?: string | null;
+          resident_type?: string | null;
+          created_at?: string | null;
+        };
+      };
     };
   };
 }
@@ -202,3 +252,6 @@ export type WarmLead = Database["public"]["Tables"]["warm_leads"]["Row"];
 export type WarmLeadInsert = Database["public"]["Tables"]["warm_leads"]["Insert"];
 export type ListMetadata = Database["public"]["Tables"]["list_metadata"]["Row"];
 export type ListPreview = Database["public"]["Tables"]["list_preview"]["Row"];
+export type ContactNote = Database["public"]["Tables"]["contact_notes"]["Row"];
+export type ContactNoteInsert = Database["public"]["Tables"]["contact_notes"]["Insert"];
+export type SmsCellListRow = Database["public"]["Tables"]["sms_cell_list_rows"]["Row"];

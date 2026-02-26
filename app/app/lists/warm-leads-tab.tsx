@@ -13,11 +13,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { WarmLead } from "@/types/database";
+import Link from "next/link";
 import {
   getWarmLeads,
   deleteWarmLead,
   exportWarmLeadsCsv,
 } from "@/lib/actions/lists";
+import { normalizePhone } from "@/lib/utils/phone";
 
 const PAGE_SIZE = 50;
 
@@ -117,9 +119,27 @@ export function WarmLeadsTab() {
               <TableBody>
                 {rows.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell className="font-mono text-sm">{row.phone_number}</TableCell>
+                    <TableCell className="font-mono text-sm">
+                      <Link
+                        href={`/lists/contact/${normalizePhone(row.phone_number)}`}
+                        className="text-primary hover:underline"
+                      >
+                        {row.phone_number}
+                      </Link>
+                    </TableCell>
                     <TableCell className="text-sm">{row.full_name ?? "—"}</TableCell>
-                    <TableCell className="max-w-[180px] truncate text-sm">{row.address ?? "—"}</TableCell>
+                    <TableCell className="max-w-[180px] truncate text-sm">
+                      {row.address ? (
+                        <Link
+                          href={`/lists/contact/${normalizePhone(row.phone_number)}`}
+                          className="text-primary hover:underline"
+                        >
+                          {row.address}
+                        </Link>
+                      ) : (
+                        "—"
+                      )}
+                    </TableCell>
                     <TableCell className="max-w-[120px] truncate text-sm">
                       {row.first_reply_text ?? "—"}
                     </TableCell>

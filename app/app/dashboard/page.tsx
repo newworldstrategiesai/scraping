@@ -58,6 +58,19 @@ export default async function DashboardPage() {
               </Button>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Form Submissions</CardTitle>
+              <CardDescription>
+                Contact form submissions from the website &quot;Get a Free Quote&quot; section.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="outline">
+                <Link href="/dashboard/submissions">View submissions</Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
         <div className="mt-8 flex gap-4">
           <Button asChild>

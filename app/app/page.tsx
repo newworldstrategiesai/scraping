@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TestimonialCarousel } from "@/components/testimonial-carousel";
+import { ContactForm } from "@/components/contact-form";
 import {
   getAggregateRatingSchema,
   getReviewSchemaItems,
@@ -8,27 +9,29 @@ import {
   reviewsWithText,
 } from "@/data/reviews";
 
-const SITE_NAME = "Southern Tree Services";
+const SITE_NAME = "Southern Tree & Renovations";
 const AREA = "Memphis, TN";
-const PHONE_PLACEHOLDER = "(901) 555-0123";
+const PHONE = "901-728-8065";
+const ADDRESS = "939 Kelley Road, Memphis, Tennessee 38111";
+const HOURS = "9:00 am – 5:00 pm";
 
 export const metadata = {
-  title: "Southern Tree Services | Tree Removal, Trimming & Stump Removal | Memphis, TN",
+  title: "Southern Tree & Renovations | Tree Removal & Trimming | Memphis, TN",
   description:
-    "Southern Tree Services – professional tree removal, tree trimming, and stump removal in Memphis, TN. Licensed, insured, free estimates. Same-day emergency tree service. Call for a free quote.",
+    "Southern Tree & Renovations – affordable, reliable tree removal, tree trimming, stump grinding, and debris haul-off in Memphis, Germantown, Cordova, Bartlett, and Shelby County. Free estimates. Same-day emergency service.",
   keywords: [
     "tree service Memphis TN",
     "tree removal Memphis",
     "tree trimming Memphis",
-    "stump removal Memphis",
+    "stump grinding Memphis",
     "emergency tree service Memphis",
     "arborist Memphis TN",
-    "Southern Tree Services",
+    "Southern Tree & Renovations",
   ],
   openGraph: {
-    title: "Southern Tree Services | Tree Removal & Trimming | Memphis, TN",
+    title: "Southern Tree & Renovations | Tree Removal & Trimming | Memphis, TN",
     description:
-      "Professional tree removal, trimming, and stump removal in Memphis, TN. Free estimates. Same-day emergency service.",
+      "Affordable, reliable tree services in Memphis, TN. Tree removal, trimming, stump grinding. Free estimates. Same-day emergency service.",
     type: "website",
   },
   alternates: { canonical: "/" },
@@ -47,17 +50,27 @@ function JsonLd() {
     "@type": "LocalBusiness",
     name: SITE_NAME,
     description:
-      "Professional tree removal, tree trimming, stump removal, and emergency tree service in Memphis, TN and surrounding areas.",
+      "Professional tree removal, tree trimming, stump grinding, debris haul-off, and emergency tree service in Memphis, Germantown, Cordova, Bartlett, and Shelby County.",
+    telephone: PHONE,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "939 Kelley Road",
+      addressLocality: "Memphis",
+      addressRegion: "TN",
+      postalCode: "38111",
+    },
+    openingHours: "Mo-Fr 09:00-17:00",
     ...(baseUrl && { url: baseUrl }),
     aggregateRating: getAggregateRatingSchema(),
     review: schemaReviews,
     areaServed: [
       { "@type": "City", name: "Memphis", containedInPlace: { "@type": "State", name: "Tennessee" } },
       { "@type": "City", name: "Germantown", containedInPlace: { "@type": "State", name: "Tennessee" } },
+      { "@type": "City", name: "Cordova", containedInPlace: { "@type": "State", name: "Tennessee" } },
       { "@type": "City", name: "Bartlett", containedInPlace: { "@type": "State", name: "Tennessee" } },
       { "@type": "City", name: "Collierville", containedInPlace: { "@type": "State", name: "Tennessee" } },
     ],
-    serviceType: ["Tree Removal", "Tree Trimming", "Stump Removal", "Emergency Tree Service"],
+    serviceType: ["Tree Removal", "Tree Trimming", "Stump Grinding", "Debris Haul Off", "Emergency Tree Service"],
   };
   return (
     <script
@@ -78,16 +91,16 @@ export default function HomePage() {
           </Link>
           <div className="flex items-center gap-4">
             <a
-              href={`tel:${PHONE_PLACEHOLDER.replace(/\D/g, "")}`}
+              href={`tel:${PHONE.replace(/\D/g, "")}`}
               className="text-sm font-medium text-muted-foreground hover:text-foreground"
             >
-              {PHONE_PLACEHOLDER}
+              {PHONE}
             </a>
             <Button asChild size="sm">
-              <a href={`tel:${PHONE_PLACEHOLDER.replace(/\D/g, "")}`}>Free Estimate</a>
+              <a href={`tel:${PHONE.replace(/\D/g, "")}`}>Free Estimate</a>
             </Button>
             <Link
-              href="/dashboard"
+              href="/login"
               className="text-sm text-muted-foreground hover:text-foreground"
             >
               Client Login
@@ -104,14 +117,14 @@ export default function HomePage() {
               {SITE_NAME}
             </h1>
             <p className="mt-4 text-xl text-muted-foreground md:text-2xl">
-              Tree Removal, Trimming & Stump Removal in {AREA}
+              Memphis Tree Service
             </p>
             <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
-              Licensed and insured. Free estimates. Same-day emergency tree service for Memphis and the greater metro area.
+              We offer affordable and reliable services for all your tree needs. Licensed, insured. Free estimates. Same-day emergency tree service for Memphis and Shelby County.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Button asChild size="lg">
-                <a href={`tel:${PHONE_PLACEHOLDER.replace(/\D/g, "")}`}>Call for Free Estimate</a>
+                <a href={`tel:${PHONE.replace(/\D/g, "")}`}>Schedule a Consultation</a>
               </Button>
               <Button asChild variant="outline" size="lg">
                 <a href="#services">Our Services</a>
@@ -130,20 +143,20 @@ export default function HomePage() {
             <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 {
-                  title: "Tree Removal",
-                  desc: "Safe, professional tree removal in Memphis. We handle large and hazardous trees with care.",
+                  title: "Tree Removal & Trimming",
+                  desc: "Professional tree removals for hazardous or unwanted trees, crane tree removal, expert tree trimming and pruning. Memphis, Germantown, Cordova, Bartlett, and Shelby County.",
                 },
                 {
-                  title: "Tree Trimming",
-                  desc: "Expert tree trimming and pruning to keep your property healthy and looking its best.",
+                  title: "Stump Grinding",
+                  desc: "Professional stump grinding in Memphis and Shelby County. We restore the beauty of your landscape with state-of-the-art equipment.",
                 },
                 {
-                  title: "Stump Removal",
-                  desc: "Stump grinding and stump removal so you can reclaim your yard.",
+                  title: "Debris Haul Off",
+                  desc: "Tree care, debris hauling, and junk removal. Storm cleanup and full removal – we clear everything away and leave your property clean.",
                 },
                 {
                   title: "Emergency Tree Service",
-                  desc: "Storm damage? Fallen limbs? Same-day emergency tree service when you need it most.",
+                  desc: "Storm damage? Fallen limbs? Around-the-clock emergency tree service for urgent situations.",
                 },
               ].map((s) => (
                 <li key={s.title} className="rounded-lg border border-border bg-card p-6">
@@ -169,10 +182,13 @@ export default function HomePage() {
         <section className="py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
             <h2 className="text-3xl font-semibold text-foreground">Why Choose Southern Tree Services?</h2>
-            <ul className="mt-8 space-y-4 text-muted-foreground">
+            <p className="mt-4 text-muted-foreground">
+              We have been providing quality tree services for over a decade. Our team of skilled professionals is passionate about what we do. We take pride in our work and strive to exceed our customers' expectations. We believe in a personalized approach to tree care – we work with you to develop a plan that meets your unique needs and budget.
+            </p>
+            <ul className="mt-6 space-y-4 text-muted-foreground">
               <li className="flex gap-3">
                 <span className="text-primary font-medium">•</span>
-                Licensed and insured for your peace of mind
+                Over a decade of quality tree services
               </li>
               <li className="flex gap-3">
                 <span className="text-primary font-medium">•</span>
@@ -180,11 +196,11 @@ export default function HomePage() {
               </li>
               <li className="flex gap-3">
                 <span className="text-primary font-medium">•</span>
-                Same-day and emergency tree service available
+                Same-day and emergency tree service
               </li>
               <li className="flex gap-3">
                 <span className="text-primary font-medium">•</span>
-                Professional equipment and experienced crew
+                Personalized plans tailored to your needs and budget
               </li>
             </ul>
           </div>
@@ -203,27 +219,55 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Contact / Get a quote */}
+        <section id="contact" className="border-t border-border py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-4">
+            <h2 className="text-3xl font-semibold text-foreground">Get a Free Quote</h2>
+            <p className="mt-2 text-muted-foreground">
+              Name, phone, address, and optional email and message. We&apos;ll get back to you soon.
+            </p>
+            <div className="mt-10 max-w-xl">
+              <ContactForm />
+            </div>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="border-t border-border bg-primary text-primary-foreground py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4 text-center">
-            <h2 className="text-2xl font-semibold md:text-3xl">Get a Free Estimate Today</h2>
+            <h2 className="text-2xl font-semibold md:text-3xl">Get a Free Quote</h2>
             <p className="mt-4 text-primary-foreground/90">
-              Call for tree removal, tree trimming, or stump removal in Memphis, TN.
+              We stay in constant communication until the job is done. Give us a call for a free quote or questions.
             </p>
             <Button asChild size="lg" variant="secondary" className="mt-8">
-              <a href={`tel:${PHONE_PLACEHOLDER.replace(/\D/g, "")}`}>{PHONE_PLACEHOLDER}</a>
+              <a href={`tel:${PHONE.replace(/\D/g, "")}`}>{PHONE}</a>
             </Button>
           </div>
         </section>
 
         {/* Footer */}
         <footer className="border-t border-border py-8">
-          <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{SITE_NAME}</span>
-            <span>{AREA}</span>
-            <Link href="/dashboard" className="hover:text-foreground">
-              Client Login
-            </Link>
+          <div className="mx-auto max-w-5xl px-4 flex flex-col gap-4 text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="font-medium text-foreground">{SITE_NAME}</span>
+              <Link href="/login" className="hover:text-foreground">
+                Client Login
+              </Link>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+              <a
+                href={`https://maps.google.com/?q=${encodeURIComponent(ADDRESS)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground"
+              >
+                {ADDRESS}
+              </a>
+              <a href={`tel:${PHONE.replace(/\D/g, "")}`} className="hover:text-foreground">
+                {PHONE}
+              </a>
+            </div>
+            <p className="text-center sm:text-left">Open: {HOURS}</p>
           </div>
         </footer>
       </main>

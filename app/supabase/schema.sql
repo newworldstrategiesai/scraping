@@ -47,8 +47,22 @@ create table if not exists warm_leads (
   source_campaign text default 'SMS-neighborhood'
 );
 
+-- Contact / quote form submissions (public form → admin view)
+create table if not exists form_submissions (
+  id uuid primary key default gen_random_uuid(),
+  name text,
+  phone text,
+  address text,
+  email text,
+  message text,
+  created_at timestamptz default now()
+);
+
+create index if not exists form_submissions_created_at on form_submissions (created_at desc);
+
 -- RLS (optional): enable when you add Supabase Auth; use service_role to bypass until then
 -- alter table app_config enable row level security;
 -- alter table jobs enable row level security;
 -- alter table opt_outs enable row level security;
 -- alter table warm_leads enable row level security;
+-- alter table form_submissions enable row level security;

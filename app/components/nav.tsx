@@ -4,6 +4,7 @@ import { NavLogout } from "./nav-logout";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/dashboard/submissions", label: "Submissions" },
   { href: "/settings", label: "Settings" },
   { href: "/actions", label: "Actions" },
   { href: "/jobs", label: "Jobs" },

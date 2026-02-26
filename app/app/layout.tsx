@@ -18,9 +18,9 @@ export const metadata: Metadata = {
       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
       : process.env.NEXT_PUBLIC_SITE_URL ?? "https://southern-tree-services.vercel.app"
   ),
-  title: "Southern Tree Services | Tree Removal & Trimming | Memphis, TN",
+  title: "Southern Tree & Renovations | Tree Removal & Trimming | Memphis, TN",
   description:
-    "Professional tree removal, tree trimming, and stump removal in Memphis, TN. Free estimates. Same-day emergency service.",
+    "Southern Tree & Renovations – affordable, reliable tree services in Memphis, TN. Tree removal, trimming, stump grinding. Free estimates. Same-day emergency service.",
 };
 
 export default function RootLayout({

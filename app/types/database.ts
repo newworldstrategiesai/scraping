@@ -65,6 +65,34 @@ export interface Database {
           error?: string | null;
         };
       };
+      form_submissions: {
+        Row: {
+          id: string;
+          name: string | null;
+          phone: string | null;
+          address: string | null;
+          email: string | null;
+          message: string | null;
+          created_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          name?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          email?: string | null;
+          message?: string | null;
+          created_at?: string | null;
+        };
+        Update: {
+          name?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          email?: string | null;
+          message?: string | null;
+          created_at?: string | null;
+        };
+      };
     };
   };
 }
@@ -72,3 +100,5 @@ export interface Database {
 export type AppConfig = Database["public"]["Tables"]["app_config"]["Row"];
 export type Job = Database["public"]["Tables"]["jobs"]["Row"];
 export type JobInsert = Database["public"]["Tables"]["jobs"]["Insert"];
+export type FormSubmission = Database["public"]["Tables"]["form_submissions"]["Row"];
+export type FormSubmissionInsert = Database["public"]["Tables"]["form_submissions"]["Insert"];

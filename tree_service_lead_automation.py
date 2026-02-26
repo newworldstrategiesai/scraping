@@ -31,6 +31,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
@@ -469,13 +470,24 @@ def cbc_lookup_address(driver, address: str) -> List[Dict]:
     human_delay(3, 6)
     wait = WebDriverWait(driver, WAIT_TIMEOUT)
     try:
-        # Address search input — update selector if site changes
+        # Address search input — wait for interactable, scroll into view, then type
         inp = wait.until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, "input[name*='address'], input[placeholder*='Address'], input#address, input[type='search']")
+                (By.CSS_SELECTOR, "input[name*='address'], input[placeholder*='Address'], input#address, input[type='search'], input[placeholder*='address']")
             )
         )
-        inp.clear()
+        driver.execute_script("arguments[0].scrollIntoView({block:'center'});", inp)
+        human_delay(0.5, 1)
+        wait.until(EC.visibility_of(inp))
+        try:
+            inp.click()
+        except Exception:
+            pass
+        human_delay(0.3, 0.6)
+        try:
+            inp.clear()
+        except Exception:
+            ActionChains(driver).click(inp).key_down(Keys.COMMAND if os.name != "nt" else Keys.CONTROL).send_keys("a").key_up(Keys.COMMAND if os.name != "nt" else Keys.CONTROL).perform()
         inp.send_keys(address)
         human_delay(1, 2)
         # Submit
@@ -526,13 +538,12 @@ def cbc_lookup_address(driver, address: str) -> List[Dict]:
                     digits = re.sub(r"\D", "", text)
                     if len(digits) >= 10:
                         phone = f"({digits[-10:-7]}) {digits[-7:-4]}-{digits[-4:]}" if len(digits) == 10 else text
-                        if "Mobile" in phone_type or "Cell" in phone_type.lower():
-                            results.append({
-                                "Full_Name": name,
-                                "Address": address,
-                                "Phone_Number": phone,
-                                "Phone_Type": phone_type,
-                            })
+                        results.append({
+                            "Full_Name": name,
+                            "Address": address,
+                            "Phone_Number": phone,
+                            "Phone_Type": phone_type,
+                        })
             except (NoSuchElementException, IndexError):
                 continue
     except Exception as e:
@@ -556,19 +567,17 @@ def run_cbc_lookups(addresses: List[str], driver, batch_size: int = BATCH_SIZE_C
 # Post-processing and output
 # ---------------------------------------------------------------------------
 def post_process_and_save(leads: List[Dict], output_path: str = FINAL_LEADS_CSV):
-    """Dedupe, keep only Mobile/Cell, save CSV."""
+    """Dedupe, save all leads (all phone types). Filter to cell later via build_sms_list."""
     if not leads:
         logger.warning("No leads to save.")
         return
     df = pd.DataFrame(leads)
-    if "Phone_Type" not in df.columns or df.empty:
-        logger.warning("No Phone_Type column or empty leads; skipping filter.")
+    if df.empty:
         return
-    df = df[df["Phone_Type"].astype(str).str.contains("Mobile|Cell", case=False, na=False)]
     df = df.drop_duplicates(subset=["Address", "Phone_Number"], keep="first")
-    df = df[["Full_Name", "Address", "Phone_Number", "Phone_Type"]]
-    df.to_csv(output_path, index=False)
-    logger.info("Saved %d leads (mobile only) to %s", len(df), output_path)
+    cols = [c for c in ["Full_Name", "Address", "Phone_Number", "Phone_Type"] if c in df.columns]
+    df[cols].to_csv(output_path, index=False)
+    logger.info("Saved %d leads to %s", len(df), output_path)
 
 
 # ---------------------------------------------------------------------------
@@ -594,10 +603,19 @@ def main():
 
         if args.addresses_csv and Path(args.addresses_csv).exists():
             logger.info("Skipping Propwire; loading addresses from %s", args.addresses_csv)
-            df = pd.read_csv(args.addresses_csv)
-            addr_col = "Address" if "Address" in df.columns else df.columns[0]
-            addresses = df[addr_col].astype(str).dropna().tolist()
-            addresses = [a.strip() for a in addresses if a.strip() and a.strip().lower() != "nan"]
+            addresses = []
+            import csv as csv_mod
+            with open(args.addresses_csv, newline="", encoding="utf-8") as f:
+                reader = csv_mod.reader(f)
+                next(reader, None)
+                for row in reader:
+                    if not row or not row[0].strip():
+                        continue
+                    if len(row) >= 2 and row[1].strip() and re.match(r"^\s*[A-Z]{2}\s+\d{5}", row[1].strip()):
+                        a = (row[0].strip() + ", " + row[1].strip())
+                    else:
+                        a = row[0].strip()
+                    addresses.append(a)
         else:
             addresses = propwire_search_and_scrape(
                 driver,

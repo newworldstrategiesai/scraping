@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lead Automation | Tree Service",
-  description: "Control parameters and run jobs for PropWire → CBC → SMS pipeline",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_VERCEL_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_SITE_URL ?? "https://southern-tree-services.vercel.app"
+  ),
+  title: "Southern Tree Services | Tree Removal & Trimming | Memphis, TN",
+  description:
+    "Professional tree removal, tree trimming, and stump removal in Memphis, TN. Free estimates. Same-day emergency service.",
 };
 
 export default function RootLayout({

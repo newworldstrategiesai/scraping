@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { NavLogout } from "./nav-logout";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
@@ -11,12 +12,13 @@ const links = [
 export function Nav({ currentPath }: { currentPath?: string }) {
   return (
     <nav className="border-b border-border bg-card">
-      <div className="mx-auto flex h-14 max-w-5xl items-center gap-6 px-4">
-        <Link href="/dashboard" className="font-semibold text-foreground">
-          Lead Automation
-        </Link>
-        <div className="flex gap-1">
-          {links.map(({ href, label }) => (
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-6 px-4">
+        <div className="flex items-center gap-6">
+          <Link href="/dashboard" className="font-semibold text-foreground">
+            Lead Automation
+          </Link>
+          <div className="flex gap-1">
+            {links.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
@@ -30,7 +32,9 @@ export function Nav({ currentPath }: { currentPath?: string }) {
               {label}
             </Link>
           ))}
+          </div>
         </div>
+        <NavLogout />
       </div>
     </nav>
   );

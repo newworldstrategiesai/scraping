@@ -16,6 +16,7 @@ from pathlib import Path
 DEFAULT_LIST = "sms_cell_list.csv"
 DEFAULT_OPT_OUTS = "opt_outs.csv"
 DEFAULT_DELAY_SEC = 1.0
+DEFAULT_DAILY_BATCH_LIMIT = 450
 
 # Example script (identity + opt-out). Replace COMPANY with your name.
 DEFAULT_MESSAGE = (
@@ -28,6 +29,8 @@ def main():
     parser = argparse.ArgumentParser(description="Send campaign SMS from sms_cell_list (Twilio)")
     parser.add_argument("--list", default=DEFAULT_LIST, help="SMS list CSV (Phone_Number column)")
     parser.add_argument("--opt-outs", default=DEFAULT_OPT_OUTS, help="Opt-outs CSV")
+    parser.add_argument("--warm-leads", default="", help="Warm leads CSV to exclude (phone_number or Phone_Number column)")
+    parser.add_argument("--limit", type=int, default=0, help="Max messages to send this run (0 = no limit)")
     parser.add_argument("--send", action="store_true", help="Actually send (default: dry-run)")
     parser.add_argument("--dry-run", action="store_true", help="Explicitly dry-run (default when --send not passed)")
     parser.add_argument("--delay", type=float, default=DEFAULT_DELAY_SEC, help="Seconds between sends (default 1)")
@@ -63,7 +66,20 @@ def main():
             opt_nums = set(opt["Phone_Number"].astype(str).str.replace(r"\D", "", regex=True).str[-10:])
             df = df[~df["Phone_Number"].isin(opt_nums)]
 
+    # Exclude warm leads (already opted in)
+    warm_path = root / args.warm_leads if args.warm_leads else None
+    if warm_path and warm_path.exists():
+        warm = pd.read_csv(warm_path)
+        col = "phone_number" if "phone_number" in warm.columns else "Phone_Number"
+        if col in warm.columns and not warm.empty:
+            warm_nums = set(warm[col].astype(str).str.replace(r"\D", "", regex=True).str[-10:])
+            df = df[~df["Phone_Number"].isin(warm_nums)]
+
     df = df.drop_duplicates(subset=["Phone_Number"], keep="first")
+
+    # Apply daily batch limit
+    if args.limit and args.limit > 0:
+        df = df.head(args.limit)
     message = (args.message or DEFAULT_MESSAGE).strip().format(company=args.company)
     if len(message) > 160:
         print(f"Warning: message length {len(message)} > 160 chars (extra segment cost).")

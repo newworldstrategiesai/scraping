@@ -50,6 +50,24 @@ export async function getSmsCellListRows(page = 0): Promise<{ rows: SmsCellListR
   return { rows, total };
 }
 
+export async function getWarmLeadCounts(): Promise<{ today: number; thisWeek: number }> {
+  const supabase = getSupabase();
+  if (!supabase) return { today: 0, thisWeek: 0 };
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(startOfWeek.getDate() - 7);
+  const startOfWeekIso = startOfWeek.toISOString();
+  const [todayRes, weekRes] = await Promise.all([
+    supabase.from("warm_leads").select("id", { count: "exact", head: true }).gte("reply_time", startOfToday),
+    supabase.from("warm_leads").select("id", { count: "exact", head: true }).gte("reply_time", startOfWeekIso),
+  ]);
+  return {
+    today: todayRes.count ?? 0,
+    thisWeek: weekRes.count ?? 0,
+  };
+}
+
 export async function getOptOuts(page = 0): Promise<{ rows: OptOut[]; total: number }> {
   const supabase = getSupabase();
   if (!supabase) return { rows: [], total: 0 };

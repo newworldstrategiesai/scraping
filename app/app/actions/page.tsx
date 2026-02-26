@@ -26,6 +26,7 @@ export default async function ActionsPage() {
                 sms_delay_sec: config?.sms_delay_sec ?? 1,
                 include_unknown_phone_type: config?.include_unknown_phone_type ?? true,
                 addresses_csv_name: config?.addresses_csv_name ?? "propwire_addresses.csv",
+                daily_batch_limit: 450,
               }}
             />
           </CardContent>

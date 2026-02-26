@@ -32,6 +32,41 @@ def get_supabase():
         return None
 
 
+WORKER_OPT_OUTS_CSV = "_worker_opt_outs.csv"
+WORKER_WARM_LEADS_CSV = "_worker_warm_leads.csv"
+
+
+def export_opt_outs_and_warm_leads(supabase, dest_dir: Path):
+    """Write opt_outs and warm_leads from Supabase to CSVs for send_campaign script."""
+    import csv
+    opt_path = dest_dir / WORKER_OPT_OUTS_CSV
+    warm_path = dest_dir / WORKER_WARM_LEADS_CSV
+    try:
+        r_opt = supabase.table("opt_outs").select("phone_number,date,source").execute()
+        with open(opt_path, "w", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["Phone_Number", "Date", "Source"])
+            for row in (r_opt.data or []):
+                w.writerow([
+                    row.get("phone_number", ""),
+                    row.get("date", ""),
+                    row.get("source", "SMS reply"),
+                ])
+    except Exception as e:
+        print(f"Export opt_outs: {e}", file=sys.stderr)
+        opt_path.write_text("Phone_Number,Date,Source\n")
+    try:
+        r_warm = supabase.table("warm_leads").select("phone_number").execute()
+        with open(warm_path, "w", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["phone_number"])
+            for row in (r_warm.data or []):
+                w.writerow([row.get("phone_number", "")])
+    except Exception as e:
+        print(f"Export warm_leads: {e}", file=sys.stderr)
+        warm_path.write_text("phone_number\n")
+
+
 def claim_pending_job(supabase):
     """Fetch one pending job and set it to running. Returns (job, True) if we claimed it."""
     r = supabase.table("jobs").select("id,action,payload").eq("status", "pending").order("created_at").limit(1).execute()
@@ -82,6 +117,11 @@ def build_cmd(action: str, payload: dict) -> list | None:
             return None
         return ["/usr/bin/env", "bash", str(script), addresses_csv]
 
+    # Shared args for send_campaign: use Supabase-exported opt_outs and warm_leads, daily batch limit
+    worker_opt_outs = REPO_ROOT / "_worker_opt_outs.csv"
+    worker_warm_leads = REPO_ROOT / "_worker_warm_leads.csv"
+    daily_limit = payload.get("daily_batch_limit") or 450
+
     if action == "send_campaign_dry_run":
         cmd = [
             sys.executable,
@@ -89,6 +129,9 @@ def build_cmd(action: str, payload: dict) -> list | None:
             "--dry-run",
             "--company", company,
             "--delay", str(delay),
+            "--opt-outs", str(worker_opt_outs),
+            "--warm-leads", str(worker_warm_leads),
+            "--limit", str(daily_limit),
         ]
         if message:
             cmd.extend(["--message", message])
@@ -101,6 +144,9 @@ def build_cmd(action: str, payload: dict) -> list | None:
             "--send",
             "--company", company,
             "--delay", str(delay),
+            "--opt-outs", str(worker_opt_outs),
+            "--warm-leads", str(worker_warm_leads),
+            "--limit", str(daily_limit),
         ]
         if message:
             cmd.extend(["--message", message])
@@ -238,6 +284,10 @@ def main():
                 job_id = job["id"]
                 action = job.get("action", "")
                 payload = job.get("payload") or {}
+                if action in ("send_campaign", "send_campaign_dry_run"):
+                    export_opt_outs_and_warm_leads(supabase, REPO_ROOT)
+                if action == "send_warm_lead_message":
+                    export_opt_outs_and_warm_leads(supabase, REPO_ROOT)
                 print(f"Running job {job_id}: {action}")
                 success, log, err = run_job(job_id, action, payload)
                 set_job_result(supabase, job_id, success, log, err)

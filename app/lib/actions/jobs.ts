@@ -30,7 +30,9 @@ export type JobAction =
   | "parse_quality_leads"
   | "run_cbc"
   | "send_campaign_dry_run"
-  | "send_campaign";
+  | "send_campaign"
+  | "send_warm_lead_message"
+  | "send_single_sms";
 
 export async function createJob(
   action: JobAction,

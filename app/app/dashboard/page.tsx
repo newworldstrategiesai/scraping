@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { getConfig } from "@/lib/actions/config";
 import { getJobs } from "@/lib/actions/jobs";
+import { getWarmLeadCounts } from "@/lib/actions/lists";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const [config, jobs] = await Promise.all([getConfig(), getJobs()]);
+  const [config, jobs, warmCounts] = await Promise.all([getConfig(), getJobs(), getWarmLeadCounts()]);
   const pending = jobs.filter((j) => j.status === "pending").length;
   const hasSupabase = config !== null;
 
@@ -55,6 +56,22 @@ export default async function DashboardPage() {
             <CardContent>
               <Button asChild variant="outline">
                 <Link href="/jobs">View jobs</Link>
+              </Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Warm leads</CardTitle>
+              <CardDescription>
+                Opt-ins from SMS (reply YES). Target 10–16 per day.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-sm text-muted-foreground">
+                <strong className="text-foreground">{warmCounts.today}</strong> today · <strong className="text-foreground">{warmCounts.thisWeek}</strong> this week
+              </p>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/lists?tab=warm_leads">View warm leads</Link>
               </Button>
             </CardContent>
           </Card>

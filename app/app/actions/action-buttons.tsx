@@ -12,8 +12,9 @@ const ACTIONS: { action: JobAction; label: string; variant?: "default" | "outlin
   { action: "build_sms_list", label: "Build SMS list" },
   { action: "parse_quality_leads", label: "Parse quality leads" },
   { action: "run_cbc", label: "Run CBC lookups" },
-  { action: "send_campaign_dry_run", label: "Send campaign (dry run)" },
-  { action: "send_campaign", label: "Send campaign (for real)", variant: "destructive" },
+  { action: "send_campaign_dry_run", label: "Send daily batch (dry run)" },
+  { action: "send_campaign", label: "Send daily batch (for real)", variant: "destructive" },
+  { action: "send_warm_lead_message", label: "Message warm leads" },
 ];
 
 export function ActionButtons({ payload }: { payload: Record<string, unknown> }) {
@@ -48,6 +49,11 @@ export function ActionButtons({ payload }: { payload: Record<string, unknown> })
     });
   }
 
+  async function runMessageWarmLeads() {
+    setShowMessageWarmLeadsForm(false);
+    await run("send_warm_lead_message", { message: warmLeadMessage.trim() || "Thanks for your interest! We'll be in touch shortly." });
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
@@ -56,14 +62,48 @@ export function ActionButtons({ payload }: { payload: Record<string, unknown> })
             key={action}
             variant={variant}
             disabled={!!loading}
-            onClick={() =>
-              action === "build_sms_list" ? setShowBuildSmsForm(true) : run(action)
-            }
+            onClick={() => {
+              if (action === "build_sms_list") setShowBuildSmsForm(true);
+              else if (action === "send_warm_lead_message") setShowMessageWarmLeadsForm(true);
+              else run(action);
+            }}
           >
             {loading === action ? "Queuing…" : label}
           </Button>
         ))}
       </div>
+
+      {showMessageWarmLeadsForm && (
+        <Card className="border-muted bg-muted/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Message warm leads</CardTitle>
+            <CardDescription>
+              Send one SMS to every warm lead (opted-in contacts). Worker must be running.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="warm_lead_message">Message</Label>
+              <Input
+                id="warm_lead_message"
+                placeholder="Thanks for your interest! We'll be in touch shortly."
+                value={warmLeadMessage}
+                onChange={(e) => setWarmLeadMessage(e.target.value)}
+                maxLength={160}
+              />
+              <p className="text-muted-foreground text-xs">{warmLeadMessage.length}/160</p>
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={() => runMessageWarmLeads()} disabled={!!loading}>
+                {loading === "send_warm_lead_message" ? "Queuing…" : "Send to all warm leads"}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setShowMessageWarmLeadsForm(false)} disabled={!!loading}>
+                Cancel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {showBuildSmsForm && (
         <Card className="border-muted bg-muted/20">

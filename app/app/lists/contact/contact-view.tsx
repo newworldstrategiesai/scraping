@@ -25,6 +25,7 @@ import {
   getContactByPhone,
 } from "@/lib/actions/contact";
 import { addOptOut } from "@/lib/actions/lists";
+import { createJob } from "@/lib/actions/jobs";
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -79,6 +80,9 @@ export function ContactView({ initialContact }: { initialContact: ContactData })
   const [addingNote, setAddingNote] = useState(false);
   const [addingOptOut, setAddingOptOut] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [showSendSmsForm, setShowSendSmsForm] = useState(false);
+  const [smsMessage, setSmsMessage] = useState("");
+  const [sendingSms, setSendingSms] = useState(false);
 
   const phoneFormatted = formatPhone(contact.phone);
   const timeline = buildTimeline(contact);
@@ -214,6 +218,9 @@ export function ContactView({ initialContact }: { initialContact: ContactData })
           <Button variant="outline" size="sm" asChild>
             <a href={`sms:+1${contact.phone}`}>SMS</a>
           </Button>
+          <Button variant="outline" size="sm" onClick={() => setShowSendSmsForm((v) => !v)}>
+            Send SMS (Twilio)
+          </Button>
           <Button variant="outline" size="sm" onClick={copyPhone}>
             Copy phone
           </Button>
@@ -227,6 +234,57 @@ export function ContactView({ initialContact }: { initialContact: ContactData })
           </Button>
         </CardContent>
       </Card>
+
+      {showSendSmsForm && (
+        <Card className="border-muted bg-muted/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Send SMS via Twilio</CardTitle>
+            <CardDescription>
+              Queue one SMS to this number. Worker must be running to send.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="contact_sms_message">Message</Label>
+              <Input
+                id="contact_sms_message"
+                placeholder="e.g. We'll call you shortly."
+                value={smsMessage}
+                onChange={(e) => setSmsMessage(e.target.value)}
+                maxLength={160}
+              />
+              <p className="text-muted-foreground text-xs">{smsMessage.length}/160</p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                disabled={sendingSms || !smsMessage.trim()}
+                onClick={async () => {
+                  setSendingSms(true);
+                  setMessage(null);
+                  const result = await createJob("send_single_sms", {
+                    phone: contact.phone,
+                    message: smsMessage.trim(),
+                  });
+                  setSendingSms(false);
+                  if (result.ok) {
+                    setMessage({ type: "ok", text: "SMS queued. Worker will send when running." });
+                    setSmsMessage("");
+                    setShowSendSmsForm(false);
+                  } else {
+                    setMessage({ type: "error", text: result.error ?? "Failed to queue." });
+                  }
+                }}
+              >
+                {sendingSms ? "Queuing…" : "Send SMS"}
+              </Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowSendSmsForm(false)} disabled={sendingSms}>
+                Cancel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {message && (
         <p

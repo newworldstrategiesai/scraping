@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/load-env-and-next.js dev",
+    "build": "node scripts/load-env-and-next.js build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -22,6 +22,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "dotenv": "^16.4.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

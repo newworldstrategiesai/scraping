@@ -7,7 +7,10 @@ import { Label } from "@/components/ui/label";
 import { submitForm } from "@/lib/actions/submissions";
 import { cn } from "@/lib/utils";
 
-export function ContactForm({ onSuccess }: { onSuccess?: () => void } = {}) {
+export function ContactForm({
+  onSuccess,
+  compact = false,
+}: { onSuccess?: () => void; compact?: boolean } = {}) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -35,9 +38,12 @@ export function ContactForm({ onSuccess }: { onSuccess?: () => void } = {}) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
+    <form
+      onSubmit={handleSubmit}
+      className={cn("flex min-h-0 flex-col overflow-hidden", compact ? "space-y-2 sm:space-y-4" : "space-y-4")}
+    >
+      <div className={cn("grid gap-4 sm:grid-cols-2", compact && "gap-2 sm:gap-4")}>
+        <div className={compact ? "space-y-1 sm:space-y-2" : "space-y-2"}>
           <Label htmlFor="contact-name">Name *</Label>
           <Input
             id="contact-name"
@@ -45,10 +51,13 @@ export function ContactForm({ onSuccess }: { onSuccess?: () => void } = {}) {
             required
             placeholder="Your name"
             disabled={status === "loading"}
-            className="bg-background"
+            className={cn(
+              "bg-background text-base sm:text-sm",
+              compact ? "min-h-[44px] sm:min-h-9" : "min-h-[48px] sm:min-h-9"
+            )}
           />
         </div>
-        <div className="space-y-2">
+        <div className={compact ? "space-y-1 sm:space-y-2" : "space-y-2"}>
           <Label htmlFor="contact-phone">Phone *</Label>
           <Input
             id="contact-phone"
@@ -57,21 +66,27 @@ export function ContactForm({ onSuccess }: { onSuccess?: () => void } = {}) {
             required
             placeholder="(901) 555-0123"
             disabled={status === "loading"}
-            className="bg-background"
+            className={cn(
+              "bg-background text-base sm:text-sm",
+              compact ? "min-h-[44px] sm:min-h-9" : "min-h-[48px] sm:min-h-9"
+            )}
           />
         </div>
       </div>
-      <div className="space-y-2">
+      <div className={compact ? "space-y-1 sm:space-y-2" : "space-y-2"}>
         <Label htmlFor="contact-address">Address</Label>
         <Input
           id="contact-address"
           name="address"
           placeholder="Street, city, zip"
           disabled={status === "loading"}
-          className="bg-background"
+          className={cn(
+            "bg-background text-base sm:text-sm",
+            compact ? "min-h-[44px] sm:min-h-9" : "min-h-[48px] sm:min-h-9"
+          )}
         />
       </div>
-      <div className="space-y-2">
+      <div className={compact ? "space-y-1 sm:space-y-2" : "space-y-2"}>
         <Label htmlFor="contact-email">Email</Label>
         <Input
           id="contact-email"
@@ -79,19 +94,23 @@ export function ContactForm({ onSuccess }: { onSuccess?: () => void } = {}) {
           type="email"
           placeholder="you@example.com"
           disabled={status === "loading"}
-          className="bg-background"
+          className={cn(
+            "bg-background text-base sm:text-sm",
+            compact ? "min-h-[44px] sm:min-h-9" : "min-h-[48px] sm:min-h-9"
+          )}
         />
       </div>
-      <div className="space-y-2">
+      <div className={compact ? "space-y-1 sm:space-y-2" : "space-y-2"}>
         <Label htmlFor="contact-message">Message</Label>
         <textarea
           id="contact-message"
           name="message"
-          rows={4}
+          rows={compact ? 2 : 4}
           placeholder="Tell us about your tree service needs..."
           disabled={status === "loading"}
           className={cn(
-            "border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 w-full min-w-0 rounded-md border px-3 py-2 text-base shadow-xs outline-none focus-visible:ring-[3px] disabled:opacity-50 md:text-sm"
+            "border-input bg-background placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 w-full min-w-0 rounded-md border px-3 py-3 text-base shadow-xs outline-none focus-visible:ring-[3px] disabled:opacity-50 md:text-sm",
+            compact ? "min-h-[72px] sm:min-h-[80px]" : "min-h-[120px] sm:min-h-[100px]"
           )}
         />
       </div>
@@ -105,7 +124,14 @@ export function ContactForm({ onSuccess }: { onSuccess?: () => void } = {}) {
           {errorMessage}
         </p>
       )}
-      <Button type="submit" disabled={status === "loading"}>
+      <Button
+        type="submit"
+        disabled={status === "loading"}
+        className={cn(
+          "w-full sm:w-auto",
+          compact ? "min-h-[44px] sm:min-h-9" : "min-h-[48px] sm:min-h-9"
+        )}
+      >
         {status === "loading" ? "Sending…" : "Send"}
       </Button>
     </form>

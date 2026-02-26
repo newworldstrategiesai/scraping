@@ -25,6 +25,8 @@ export function ActionButtons({ payload }: { payload: Record<string, unknown> })
   const [buildSmsCity, setBuildSmsCity] = useState("");
   const [buildSmsState, setBuildSmsState] = useState("");
   const [buildSmsZip, setBuildSmsZip] = useState("");
+  const [showMessageWarmLeadsForm, setShowMessageWarmLeadsForm] = useState(false);
+  const [warmLeadMessage, setWarmLeadMessage] = useState("Thanks for your interest! We'll be in touch shortly.");
 
   async function run(action: JobAction, extraPayload: Record<string, unknown> = {}) {
     setLoading(action);

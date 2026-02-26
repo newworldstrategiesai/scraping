@@ -12,9 +12,24 @@ export const metadata: Metadata = {
   description: "Control parameters and run jobs for PropWire → CBC → SMS pipeline",
 };
 
+function formatRelativeTime(iso: string | null) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  const now = new Date();
+  const sec = Math.floor((now.getTime() - d.getTime()) / 1000);
+  if (sec < 60) return "just now";
+  if (sec < 3600) return `${Math.floor(sec / 60)} min ago`;
+  if (sec < 86400) return `${Math.floor(sec / 3600)} hr ago`;
+  return d.toLocaleDateString();
+}
+
 export default async function DashboardPage() {
   const [config, jobs, warmCounts] = await Promise.all([getConfig(), getJobs(), getWarmLeadCounts()]);
   const pending = jobs.filter((j) => j.status === "pending").length;
+  const lastFinished = jobs.find((j) => j.status === "success" || j.status === "failed");
+  const workerStatus = lastFinished?.finished_at
+    ? `Last job ${formatRelativeTime(lastFinished.finished_at)}`
+    : "No jobs run yet. Start the worker to process jobs.";
   const hasSupabase = config !== null;
 
   return (
@@ -35,7 +50,7 @@ export default async function DashboardPage() {
             <CardContent>
               {hasSupabase ? (
                 <p className="text-sm text-muted-foreground">
-                  Config: {config?.company_name ?? "default"}
+                  Config: {config?.company_name ?? "default"}. See repo <code className="rounded bg-muted px-1 text-xs">GO_LIVE_CHECKLIST.md</code> for full setup.
                 </p>
               ) : (
                 <p className="text-sm text-muted-foreground">
@@ -53,7 +68,12 @@ export default async function DashboardPage() {
                   : "Job list will appear here after Supabase is connected."}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-2">
+              {hasSupabase && (
+                <p className="text-sm text-muted-foreground">
+                  Worker: {workerStatus}
+                </p>
+              )}
               <Button asChild variant="outline">
                 <Link href="/jobs">View jobs</Link>
               </Button>

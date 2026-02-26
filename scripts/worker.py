@@ -92,7 +92,11 @@ def build_cmd(action: str, payload: dict) -> list | None:
     addresses_csv = payload.get("addresses_csv_name") or "propwire_addresses.csv"
 
     if action == "build_sms_list":
-        cmd = [sys.executable, str(REPO_ROOT / "scripts" / "build_sms_list.py")]
+        cmd = [
+            sys.executable,
+            str(REPO_ROOT / "scripts" / "build_sms_list.py"),
+            "--opt-outs", str(REPO_ROOT / WORKER_OPT_OUTS_CSV),
+        ]
         if include_unknown:
             cmd.append("--include-unknown-phone-type")
         else:
@@ -285,6 +289,8 @@ def main():
                 action = job.get("action", "")
                 payload = job.get("payload") or {}
                 if action in ("send_campaign", "send_campaign_dry_run"):
+                    export_opt_outs_and_warm_leads(supabase, REPO_ROOT)
+                if action == "build_sms_list":
                     export_opt_outs_and_warm_leads(supabase, REPO_ROOT)
                 if action == "send_warm_lead_message":
                     export_opt_outs_and_warm_leads(supabase, REPO_ROOT)

@@ -67,7 +67,7 @@ export function TestimonialCarousel({ reviews, max, className }: TestimonialCaro
         )}
         <Card className="min-h-[140px] flex-1 border-border bg-card text-card-foreground overflow-hidden">
           <CardContent className="flex flex-col justify-center p-6">
-            <LazyMotion features={domAnimation} strict>
+            <LazyMotion features={domAnimation}>
               <AnimatePresence mode="wait" initial={false}>
                 <m.div
                   key={index}

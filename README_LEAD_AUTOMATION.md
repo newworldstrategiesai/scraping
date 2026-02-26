@@ -23,6 +23,8 @@ The workflow matches what you’ll see in common tutorials:
 
 **Summary:** PropWire (addresses) → CBC (names + phones + phone type) → CSV. We use Cursor browser and/or Python/Selenium; tutorials often use Instant Data Scraper + UI.Vision. The data model and end goal (cell numbers for SMS → warm leads) are the same.
 
+For a **runbook that maps a popular video tutorial** (Instant Data Scraper on PropWire + UI.Vision on CBC) to this app and captures tips (avoid “locate next button,” full XPath when selectors break, throughput ~300/hour), see **RUNBOOK_PROPWIRE_CBC_VIDEO.md**.
+
 ---
 
 ## Setup

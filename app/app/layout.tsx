@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   title: "Southern Tree & Renovations | Tree Removal & Trimming | Memphis, TN",
   description:
     "Southern Tree & Renovations – affordable, reliable tree services in Memphis, TN. Tree removal, trimming, stump grinding. Free estimates. Same-day emergency service.",
+  viewport: { width: "device-width", initialScale: 1, maximumScale: 5 },
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({

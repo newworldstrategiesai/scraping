@@ -1,4 +1,4 @@
-import { HomePageClient } from "./home-page-client";
+import { HomePageClientWrapper } from "./home-page-client-wrapper";
 import {
   getAggregateRatingSchema,
   getReviewSchemaItems,
@@ -78,7 +78,7 @@ export default function HomePage() {
   return (
     <>
       <JsonLd />
-      <HomePageClient />
+      <HomePageClientWrapper />
     </>
   );
 }

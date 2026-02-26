@@ -23,21 +23,21 @@ export function HomePageClient() {
   return (
     <>
       <header className="border-b border-border bg-card/80 sticky top-0 z-40 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
-          <Link href="/" className="text-lg font-semibold text-foreground">
+        <div className="mx-auto flex min-h-14 max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:min-h-16 sm:px-4">
+          <Link href="/" className="min-h-[44px] min-w-[44px] flex shrink-0 items-center text-base font-semibold text-foreground sm:min-w-0 sm:min-h-0 sm:text-lg -ml-2 pl-2">
             {SITE_NAME}
           </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-muted-foreground">{PHONE}</span>
-            <Button size="sm" onClick={() => setFormModalOpen(true)}>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <a
+              href={`tel:${PHONE.replace(/\D/g, "")}`}
+              className="min-h-[44px] min-w-0 shrink flex items-center justify-center text-xs font-medium text-muted-foreground hover:text-foreground whitespace-nowrap sm:min-w-[44px] sm:text-sm"
+              aria-label="Call us"
+            >
+              {PHONE}
+            </a>
+            <Button size="sm" onClick={() => setFormModalOpen(true)} className="min-h-[44px] px-4 sm:min-h-9">
               Free Estimate
             </Button>
-            <Link
-              href="/login"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              Client Login
-            </Link>
           </div>
         </div>
       </header>
@@ -49,7 +49,7 @@ export function HomePageClient() {
           onOpenForm={() => setFormModalOpen(true)}
         />
 
-        <section id="services" className="py-16 md:py-20">
+        <section id="services" className="py-12 sm:py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
             <AnimatedSection>
               <h2 className="text-3xl font-semibold text-foreground">Tree Services in Memphis, TN</h2>
@@ -61,10 +61,10 @@ export function HomePageClient() {
           </div>
         </section>
 
-        <section className="border-t border-border bg-muted/20 py-16 md:py-20">
+        <section className="border-t border-border bg-muted/20 py-12 sm:py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
             <AnimatedSection>
-              <h2 className="text-3xl font-semibold text-foreground">Serving Memphis & the Mid-South</h2>
+              <h2 className="text-2xl font-semibold text-foreground sm:text-3xl">Serving Memphis & the Mid-South</h2>
               <p className="mt-2 text-muted-foreground">
                 We provide tree removal, tree trimming, and stump removal throughout the Memphis, TN area, including Germantown, Bartlett, Collierville, Cordova, and surrounding communities.
               </p>
@@ -72,10 +72,10 @@ export function HomePageClient() {
           </div>
         </section>
 
-        <section className="py-16 md:py-20">
+        <section className="py-12 sm:py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
             <AnimatedSection>
-              <h2 className="text-3xl font-semibold text-foreground">About Southern Tree & Renovations</h2>
+              <h2 className="text-2xl font-semibold text-foreground sm:text-3xl">About Southern Tree & Renovations</h2>
               <p className="mt-4 text-muted-foreground">
                 We have been providing quality tree services for over a decade. Our team of skilled professionals is passionate about what we do. We take pride in our work and strive to exceed our customers&apos; expectations. We believe in a personalized approach to tree care – we work with you to develop a plan that meets your unique needs and budget.
               </p>
@@ -101,10 +101,10 @@ export function HomePageClient() {
           </div>
         </section>
 
-        <section id="reviews" className="border-t border-border bg-muted/20 py-16 md:py-20">
+        <section id="reviews" className="border-t border-border bg-muted/20 py-12 sm:py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
             <AnimatedSection>
-              <h2 className="text-3xl font-semibold text-foreground">What Our Customers Say</h2>
+              <h2 className="text-2xl font-semibold text-foreground sm:text-3xl">What Our Customers Say</h2>
               <p className="mt-2 text-muted-foreground">
                 Real reviews from Memphis-area homeowners and businesses.
               </p>
@@ -115,10 +115,10 @@ export function HomePageClient() {
           </div>
         </section>
 
-        <section id="contact" className="border-t border-border py-16 md:py-20">
+        <section id="contact" className="border-t border-border py-12 sm:py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
             <AnimatedSection>
-              <h2 className="text-3xl font-semibold text-foreground">Get a Free Quote</h2>
+              <h2 className="text-2xl font-semibold text-foreground sm:text-3xl">Get a Free Quote</h2>
               <p className="mt-2 text-muted-foreground">
                 Name, phone, address, and optional email and message. We&apos;ll get back to you soon.
               </p>
@@ -129,17 +129,17 @@ export function HomePageClient() {
           </div>
         </section>
 
-        <section className="border-t border-border bg-primary py-16 md:py-20 text-primary-foreground">
+        <section className="border-t border-border bg-primary py-12 sm:py-16 md:py-20 text-primary-foreground">
           <div className="mx-auto max-w-5xl px-4 text-center">
             <AnimatedSection>
-              <h2 className="text-2xl font-semibold md:text-3xl">Get a Free Quote</h2>
-              <p className="mt-4 text-primary-foreground/90">
+              <h2 className="text-2xl font-semibold sm:text-3xl">Get a Free Quote</h2>
+              <p className="mt-4 text-primary-foreground/90 text-base sm:text-lg">
                 We stay in constant communication until the job is done. Request a free quote or ask us a question.
               </p>
               <Button
                 size="lg"
                 variant="secondary"
-                className="mt-8"
+                className="mt-6 min-h-[48px] w-full sm:mt-8 sm:w-auto sm:min-h-10"
                 onClick={() => setFormModalOpen(true)}
               >
                 Request a Free Quote
@@ -150,26 +150,24 @@ export function HomePageClient() {
 
         <footer className="border-t border-border py-8">
           <AnimatedSection>
-            <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 text-sm text-muted-foreground">
-              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 text-sm text-muted-foreground">
+              <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
                 <span className="font-medium text-foreground">{SITE_NAME}</span>
-                <Link href="/login" className="hover:text-foreground">
-                  Client Login
-                </Link>
               </div>
-              <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+              <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
                 <a
                   href={`https://maps.google.com/?q=${encodeURIComponent(ADDRESS)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-foreground"
+                  className="min-h-[44px] flex items-center justify-center py-2 text-center hover:text-foreground active:opacity-80"
                 >
                   {ADDRESS}
                 </a>
                 <button
                   type="button"
                   onClick={() => setFormModalOpen(true)}
-                  className="hover:text-foreground"
+                  className="min-h-[44px] flex min-w-0 shrink items-center justify-center py-2 hover:text-foreground active:opacity-80 whitespace-nowrap text-xs sm:text-sm"
+                  aria-label="Call or get quote"
                 >
                   {PHONE}
                 </button>

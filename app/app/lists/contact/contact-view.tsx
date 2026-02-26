@@ -17,14 +17,12 @@ import {
   updateContactNote,
   deleteContactNote,
   updateOptOut,
-  deleteOptOut,
   updateWarmLead,
-  deleteWarmLead,
   updateFormSubmission,
   deleteFormSubmission,
   getContactByPhone,
 } from "@/lib/actions/contact";
-import { addOptOut } from "@/lib/actions/lists";
+import { addOptOut, deleteOptOut, deleteWarmLead } from "@/lib/actions/lists";
 import { createJob } from "@/lib/actions/jobs";
 
 function formatDate(iso: string | null) {

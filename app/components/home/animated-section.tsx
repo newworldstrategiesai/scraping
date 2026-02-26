@@ -11,7 +11,7 @@ interface AnimatedSectionProps {
 
 export function AnimatedSection({ children, className }: AnimatedSectionProps) {
   return (
-    <LazyMotion features={domAnimation} strict>
+    <LazyMotion features={domAnimation}>
       <m.div
         initial="hidden"
         whileInView="visible"

@@ -93,6 +93,100 @@ export interface Database {
           created_at?: string | null;
         };
       };
+      opt_outs: {
+        Row: {
+          id: string;
+          phone_number: string;
+          date: string | null;
+          source: string | null;
+        };
+        Insert: {
+          id?: string;
+          phone_number: string;
+          date?: string | null;
+          source?: string | null;
+        };
+        Update: {
+          phone_number?: string;
+          date?: string | null;
+          source?: string | null;
+        };
+      };
+      warm_leads: {
+        Row: {
+          id: string;
+          phone_number: string;
+          full_name: string | null;
+          address: string | null;
+          first_reply_text: string | null;
+          reply_time: string | null;
+          source_campaign: string | null;
+        };
+        Insert: {
+          id?: string;
+          phone_number: string;
+          full_name?: string | null;
+          address?: string | null;
+          first_reply_text?: string | null;
+          reply_time?: string | null;
+          source_campaign?: string | null;
+        };
+        Update: {
+          phone_number?: string;
+          full_name?: string | null;
+          address?: string | null;
+          first_reply_text?: string | null;
+          reply_time?: string | null;
+          source_campaign?: string | null;
+        };
+      };
+      list_metadata: {
+        Row: {
+          id: string;
+          name: string;
+          list_type: string;
+          source: string;
+          source_identifier: string | null;
+          row_count: number | null;
+          last_updated_at: string | null;
+          updated_by_job_id: string | null;
+        };
+        Insert: {
+          id: string;
+          name: string;
+          list_type: string;
+          source?: string;
+          source_identifier?: string | null;
+          row_count?: number | null;
+          last_updated_at?: string | null;
+          updated_by_job_id?: string | null;
+        };
+        Update: {
+          name?: string;
+          list_type?: string;
+          source?: string;
+          source_identifier?: string | null;
+          row_count?: number | null;
+          last_updated_at?: string | null;
+          updated_by_job_id?: string | null;
+        };
+      };
+      list_preview: {
+        Row: {
+          list_id: string;
+          rows: Json;
+          updated_at: string | null;
+        };
+        Insert: {
+          list_id: string;
+          rows?: Json;
+          updated_at?: string | null;
+        };
+        Update: {
+          rows?: Json;
+          updated_at?: string | null;
+        };
+      };
     };
   };
 }
@@ -102,3 +196,9 @@ export type Job = Database["public"]["Tables"]["jobs"]["Row"];
 export type JobInsert = Database["public"]["Tables"]["jobs"]["Insert"];
 export type FormSubmission = Database["public"]["Tables"]["form_submissions"]["Row"];
 export type FormSubmissionInsert = Database["public"]["Tables"]["form_submissions"]["Insert"];
+export type OptOut = Database["public"]["Tables"]["opt_outs"]["Row"];
+export type OptOutInsert = Database["public"]["Tables"]["opt_outs"]["Insert"];
+export type WarmLead = Database["public"]["Tables"]["warm_leads"]["Row"];
+export type WarmLeadInsert = Database["public"]["Tables"]["warm_leads"]["Insert"];
+export type ListMetadata = Database["public"]["Tables"]["list_metadata"]["Row"];
+export type ListPreview = Database["public"]["Tables"]["list_preview"]["Row"];

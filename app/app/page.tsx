@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TestimonialCarousel } from "@/components/testimonial-carousel";
 import { ContactForm } from "@/components/contact-form";
+import { AnimatedHero } from "@/components/home/animated-hero";
+import { AnimatedSection } from "@/components/home/animated-section";
+import { AnimatedServiceCards } from "@/components/home/animated-service-cards";
 import {
   getAggregateRatingSchema,
   getReviewSchemaItems,
@@ -111,142 +114,111 @@ export default function HomePage() {
 
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden border-b border-border bg-muted/30 py-20 md:py-28">
-          <div className="mx-auto max-w-5xl px-4 text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
-              {SITE_NAME}
-            </h1>
-            <p className="mt-4 text-xl text-muted-foreground md:text-2xl">
-              Memphis Tree Service
-            </p>
-            <p className="mt-6 max-w-2xl mx-auto text-muted-foreground">
-              We offer affordable and reliable services for all your tree needs. Licensed, insured. Free estimates. Same-day emergency tree service for Memphis and Shelby County.
-            </p>
-            <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Button asChild size="lg">
-                <a href={`tel:${PHONE.replace(/\D/g, "")}`}>Schedule a Consultation</a>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <a href="#services">Our Services</a>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <AnimatedHero siteName={SITE_NAME} phone={PHONE} />
 
         {/* Services */}
         <section id="services" className="py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
-            <h2 className="text-3xl font-semibold text-foreground">Tree Services in Memphis, TN</h2>
-            <p className="mt-2 text-muted-foreground">
-              From routine tree trimming to emergency tree removal and stump grinding – we serve {AREA} and surrounding communities.
-            </p>
-            <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                {
-                  title: "Tree Removal & Trimming",
-                  desc: "Professional tree removals for hazardous or unwanted trees, crane tree removal, expert tree trimming and pruning. Memphis, Germantown, Cordova, Bartlett, and Shelby County.",
-                },
-                {
-                  title: "Stump Grinding",
-                  desc: "Professional stump grinding in Memphis and Shelby County. We restore the beauty of your landscape with state-of-the-art equipment.",
-                },
-                {
-                  title: "Debris Haul Off",
-                  desc: "Tree care, debris hauling, and junk removal. Storm cleanup and full removal – we clear everything away and leave your property clean.",
-                },
-                {
-                  title: "Emergency Tree Service",
-                  desc: "Storm damage? Fallen limbs? Around-the-clock emergency tree service for urgent situations.",
-                },
-              ].map((s) => (
-                <li key={s.title} className="rounded-lg border border-border bg-card p-6">
-                  <h3 className="font-semibold text-foreground">{s.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-                </li>
-              ))}
-            </ul>
+            <AnimatedSection>
+              <h2 className="text-3xl font-semibold text-foreground">Tree Services in Memphis, TN</h2>
+              <p className="mt-2 text-muted-foreground">
+                From routine tree trimming to emergency tree removal and stump grinding – we serve {AREA} and surrounding communities.
+              </p>
+              <AnimatedServiceCards />
+            </AnimatedSection>
           </div>
         </section>
 
         {/* Service area */}
         <section className="border-t border-border bg-muted/20 py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
-            <h2 className="text-3xl font-semibold text-foreground">Serving Memphis & the Mid-South</h2>
-            <p className="mt-2 text-muted-foreground">
-              We provide tree removal, tree trimming, and stump removal throughout the Memphis, TN area, including Germantown, Bartlett, Collierville, Cordova, and surrounding communities.
-            </p>
+            <AnimatedSection>
+              <h2 className="text-3xl font-semibold text-foreground">Serving Memphis & the Mid-South</h2>
+              <p className="mt-2 text-muted-foreground">
+                We provide tree removal, tree trimming, and stump removal throughout the Memphis, TN area, including Germantown, Bartlett, Collierville, Cordova, and surrounding communities.
+              </p>
+            </AnimatedSection>
           </div>
         </section>
 
         {/* Why choose us */}
         <section className="py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
-            <h2 className="text-3xl font-semibold text-foreground">Why Choose Southern Tree Services?</h2>
-            <p className="mt-4 text-muted-foreground">
-              We have been providing quality tree services for over a decade. Our team of skilled professionals is passionate about what we do. We take pride in our work and strive to exceed our customers' expectations. We believe in a personalized approach to tree care – we work with you to develop a plan that meets your unique needs and budget.
-            </p>
-            <ul className="mt-6 space-y-4 text-muted-foreground">
-              <li className="flex gap-3">
-                <span className="text-primary font-medium">•</span>
-                Over a decade of quality tree services
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary font-medium">•</span>
-                Free estimates – no obligation
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary font-medium">•</span>
-                Same-day and emergency tree service
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary font-medium">•</span>
-                Personalized plans tailored to your needs and budget
-              </li>
-            </ul>
+            <AnimatedSection>
+              <h2 className="text-3xl font-semibold text-foreground">About Southern Tree & Renovations</h2>
+              <p className="mt-4 text-muted-foreground">
+                We have been providing quality tree services for over a decade. Our team of skilled professionals is passionate about what we do. We take pride in our work and strive to exceed our customers' expectations. We believe in a personalized approach to tree care – we work with you to develop a plan that meets your unique needs and budget.
+              </p>
+              <ul className="mt-6 space-y-4 text-muted-foreground">
+                <li className="flex gap-3">
+                  <span className="text-primary font-medium">•</span>
+                  Over a decade of quality tree services
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-primary font-medium">•</span>
+                  Free estimates – no obligation
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-primary font-medium">•</span>
+                  Same-day and emergency tree service
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-primary font-medium">•</span>
+                  Personalized plans tailored to your needs and budget
+                </li>
+              </ul>
+            </AnimatedSection>
           </div>
         </section>
 
         {/* Testimonials */}
         <section id="reviews" className="border-t border-border bg-muted/20 py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
-            <h2 className="text-3xl font-semibold text-foreground">What Our Customers Say</h2>
-            <p className="mt-2 text-muted-foreground">
-              Real reviews from Memphis-area homeowners and businesses.
-            </p>
-            <div className="mt-10">
-              <TestimonialCarousel reviews={reviewsWithText} max={24} />
-            </div>
+            <AnimatedSection>
+              <h2 className="text-3xl font-semibold text-foreground">What Our Customers Say</h2>
+              <p className="mt-2 text-muted-foreground">
+                Real reviews from Memphis-area homeowners and businesses.
+              </p>
+              <div className="mt-10">
+                <TestimonialCarousel reviews={reviewsWithText} max={24} />
+              </div>
+            </AnimatedSection>
           </div>
         </section>
 
         {/* Contact / Get a quote */}
         <section id="contact" className="border-t border-border py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4">
-            <h2 className="text-3xl font-semibold text-foreground">Get a Free Quote</h2>
-            <p className="mt-2 text-muted-foreground">
-              Name, phone, address, and optional email and message. We&apos;ll get back to you soon.
-            </p>
-            <div className="mt-10 max-w-xl">
-              <ContactForm />
-            </div>
+            <AnimatedSection>
+              <h2 className="text-3xl font-semibold text-foreground">Get a Free Quote</h2>
+              <p className="mt-2 text-muted-foreground">
+                Name, phone, address, and optional email and message. We&apos;ll get back to you soon.
+              </p>
+              <div className="mt-10 max-w-xl">
+                <ContactForm />
+              </div>
+            </AnimatedSection>
           </div>
         </section>
 
         {/* CTA */}
         <section className="border-t border-border bg-primary text-primary-foreground py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-4 text-center">
-            <h2 className="text-2xl font-semibold md:text-3xl">Get a Free Quote</h2>
-            <p className="mt-4 text-primary-foreground/90">
-              We stay in constant communication until the job is done. Give us a call for a free quote or questions.
-            </p>
-            <Button asChild size="lg" variant="secondary" className="mt-8">
-              <a href={`tel:${PHONE.replace(/\D/g, "")}`}>{PHONE}</a>
-            </Button>
+            <AnimatedSection>
+              <h2 className="text-2xl font-semibold md:text-3xl">Get a Free Quote</h2>
+              <p className="mt-4 text-primary-foreground/90">
+                We stay in constant communication until the job is done. Give us a call for a free quote or questions.
+              </p>
+              <Button asChild size="lg" variant="secondary" className="mt-8">
+                <a href={`tel:${PHONE.replace(/\D/g, "")}`}>{PHONE}</a>
+              </Button>
+            </AnimatedSection>
           </div>
         </section>
 
         {/* Footer */}
         <footer className="border-t border-border py-8">
+          <AnimatedSection>
           <div className="mx-auto max-w-5xl px-4 flex flex-col gap-4 text-sm text-muted-foreground">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <span className="font-medium text-foreground">{SITE_NAME}</span>
@@ -269,6 +241,7 @@ export default function HomePage() {
             </div>
             <p className="text-center sm:text-left">Open: {HOURS}</p>
           </div>
+          </AnimatedSection>
         </footer>
       </main>
     </>

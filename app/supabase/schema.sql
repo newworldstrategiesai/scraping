@@ -60,9 +60,39 @@ create table if not exists form_submissions (
 
 create index if not exists form_submissions_created_at on form_submissions (created_at desc);
 
+-- List metadata: name, type, row count, last updated (for file-based and unified list view)
+create table if not exists list_metadata (
+  id text primary key,
+  name text not null,
+  list_type text not null check (list_type in ('addresses', 'leads', 'sms_cell', 'opt_outs', 'warm_leads')),
+  source text not null default 'file' check (source in ('file', 'table')),
+  source_identifier text,
+  row_count integer default 0,
+  last_updated_at timestamptz default now(),
+  updated_by_job_id uuid references jobs(id)
+);
+
+-- List preview: first N rows for file-based lists (worker pushes after build)
+create table if not exists list_preview (
+  list_id text primary key references list_metadata(id) on delete cascade,
+  rows jsonb not null default '[]',
+  updated_at timestamptz default now()
+);
+
+insert into list_metadata (id, name, list_type, source, source_identifier) values
+  ('sms_cell_list', 'SMS campaign list', 'sms_cell', 'file', 'sms_cell_list.csv'),
+  ('propwire_addresses', 'Address list (CBC)', 'addresses', 'file', 'propwire_addresses.csv'),
+  ('tree_service_leads', 'CBC leads', 'leads', 'file', 'tree_service_leads.csv'),
+  ('quality_leads', 'Quality leads', 'leads', 'file', 'quality_leads.csv'),
+  ('opt_outs', 'Opt-outs', 'opt_outs', 'table', 'opt_outs'),
+  ('warm_leads', 'Warm leads', 'warm_leads', 'table', 'warm_leads')
+on conflict (id) do nothing;
+
 -- RLS (optional): enable when you add Supabase Auth; use service_role to bypass until then
 -- alter table app_config enable row level security;
 -- alter table jobs enable row level security;
 -- alter table opt_outs enable row level security;
 -- alter table warm_leads enable row level security;
 -- alter table form_submissions enable row level security;
+-- alter table list_metadata enable row level security;
+-- alter table list_preview enable row level security;

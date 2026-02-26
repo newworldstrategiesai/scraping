@@ -60,6 +60,19 @@ export default async function DashboardPage() {
           </Card>
           <Card>
             <CardHeader>
+              <CardTitle>Lists</CardTitle>
+              <CardDescription>
+                View and manage SMS list, opt-outs, warm leads, address lists, and lead lists.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="outline">
+                <Link href="/lists">View lists</Link>
+              </Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
               <CardTitle>Form Submissions</CardTitle>
               <CardDescription>
                 Contact form submissions from the website &quot;Get a Free Quote&quot; section.

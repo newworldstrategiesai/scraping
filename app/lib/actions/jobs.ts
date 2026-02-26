@@ -17,6 +17,14 @@ export async function getJobs(): Promise<Job[]> {
   return (data ?? []) as Job[];
 }
 
+export async function getJobById(id: string): Promise<Job | null> {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+  const { data, error } = await supabase.from("jobs").select("*").eq("id", id).single();
+  if (error || !data) return null;
+  return data as Job;
+}
+
 export type JobAction =
   | "build_sms_list"
   | "parse_quality_leads"

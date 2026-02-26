@@ -8,3 +8,6 @@ undetected-chromedriver>=3.5.0
 # SMS campaign (send + inbound webhook)
 twilio>=8.0.0
 flask>=2.0.0
+
+# Worker: poll Supabase job queue
+supabase>=2.0.0

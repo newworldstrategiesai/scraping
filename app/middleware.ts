@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/middleware";
 import { isAdminEmail } from "@/lib/auth";
 
-const protectedPaths = ["/dashboard", "/settings", "/actions", "/jobs"];
+const protectedPaths = ["/dashboard", "/settings", "/actions", "/jobs", "/lists"];
 
 function isProtected(pathname: string) {
   return protectedPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
@@ -39,5 +39,6 @@ export const config = {
     "/settings/:path*",
     "/actions/:path*",
     "/jobs/:path*",
+    "/lists/:path*",
   ],
 };

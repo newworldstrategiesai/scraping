@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, LazyMotion, m } from "framer-motion";
+import { domAnimation } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -63,24 +65,37 @@ export function TestimonialCarousel({ reviews, max, className }: TestimonialCaro
             <ChevronLeft className="h-5 w-5" />
           </Button>
         )}
-        <Card className="min-h-[140px] flex-1 border-border bg-card text-card-foreground">
+        <Card className="min-h-[140px] flex-1 border-border bg-card text-card-foreground overflow-hidden">
           <CardContent className="flex flex-col justify-center p-6">
-            <blockquote className="text-foreground">
-              <p className="text-base leading-relaxed md:text-lg">
-                &ldquo;{current.reviewText.trim()}&rdquo;
-              </p>
-            </blockquote>
-            <footer className="mt-4 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <cite className="not-italic font-medium text-foreground">{current.reviewer}</cite>
-              <span aria-hidden>·</span>
-              <span>{current.reviewDate}</span>
-            </footer>
-            {current.ownerResponse && (
-              <p className="mt-3 border-l-2 border-primary/30 pl-3 text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">Response: </span>
-                {current.ownerResponse}
-              </p>
-            )}
+            <LazyMotion features={domAnimation} strict>
+              <AnimatePresence mode="wait" initial={false}>
+                <m.div
+                  key={index}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="outline-none"
+                >
+                  <blockquote className="text-foreground">
+                    <p className="text-base leading-relaxed md:text-lg">
+                      &ldquo;{current.reviewText.trim()}&rdquo;
+                    </p>
+                  </blockquote>
+                  <footer className="mt-4 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                    <cite className="not-italic font-medium text-foreground">{current.reviewer}</cite>
+                    <span aria-hidden>·</span>
+                    <span>{current.reviewDate}</span>
+                  </footer>
+                  {current.ownerResponse && (
+                    <p className="mt-3 border-l-2 border-primary/30 pl-3 text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">Response: </span>
+                      {current.ownerResponse}
+                    </p>
+                  )}
+                </m.div>
+              </AnimatePresence>
+            </LazyMotion>
           </CardContent>
         </Card>
         {hasMultiple && (

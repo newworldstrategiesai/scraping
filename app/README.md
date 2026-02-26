@@ -1,11 +1,12 @@
 # Lead Automation Dashboard
 
-Browser UI to control parameters and queue jobs for the tree service lead pipeline (PropWire → CBC → SMS). Phase 1: settings + job queue. Jobs stay **pending** until a worker runs (Phase 2).
+Browser UI to control parameters and queue jobs for the tree service lead pipeline (PropWire → CBC → SMS). Phase 1: settings + job queue. Phase 2: **worker** runs jobs (see parent repo).
 
 ## Stack
 
 - **Next.js 16** (App Router), **Tailwind**, **ShadCN UI**
-- **Supabase** for config and job queue (no worker yet)
+- **Supabase** for config and job queue
+- **Worker** (parent repo): `python scripts/worker.py` polls Supabase and runs scripts
 
 ## Setup
 
@@ -34,8 +35,14 @@ Browser UI to control parameters and queue jobs for the tree service lead pipeli
 
 1. Push to GitHub and import the repo in Vercel (or link `app` as root).
 2. Add env vars: `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
-3. Deploy. The UI works; jobs stay pending until you add a worker (see parent `PLAN_FRONTEND_VERCEL_SUPABASE.md` Phase 2).
+3. Deploy. The UI works; jobs run when a worker is running (see below).
 
-## Next (Phase 2)
+## Running the worker (Phase 2)
 
-Run a **worker** (your machine or a server) that polls Supabase for `status = 'pending'` jobs, runs the matching Python script from the parent repo, and updates `status`, `log`, `error` in `jobs`.
+From the **parent repo root** (not `app/`):
+
+1. **Env:** Ensure `.env` has `SUPABASE_URL` or `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (same as app). Optional for real SMS: `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM`.
+2. **Install:** `pip install -r requirements.txt` (or use existing `.venv`).
+3. **Run:** `python scripts/worker.py`. Worker polls every 15s; Ctrl+C to stop.
+
+See parent `PLAN_WORKER.md` for full design and script mapping.
